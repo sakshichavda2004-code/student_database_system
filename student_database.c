@@ -13,7 +13,32 @@ struct Student
 
 struct Student *head = NULL;
    
-    int rollno=1;
+   int get_least_rollno(void)
+{
+    int candidate = 1;
+    struct Student *temp;
+
+    while (1)
+    {
+        int found = 0;
+        temp = head;
+
+        while (temp != NULL)
+        {
+            if (temp->rollno == candidate)
+            {
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+        }
+
+        if (found == 0)
+            return candidate;
+
+        candidate++;
+    }
+}
 
 void insert()
 {
@@ -21,8 +46,8 @@ void insert()
 
     new = (struct Student *)malloc(sizeof(struct Student));
 
-    new->rollno=rollno++;
-    printf(" Roll Number: %d\n",new->rollno);
+    new->rollno = get_least_rollno();
+    printf(" Roll Number: %d\n", new->rollno);
 
     printf("Enter Name: ");
     scanf(" %s", new->name);
@@ -182,40 +207,59 @@ void savedata()
 
 void sort()
 {
-	struct Student *i,*j;
-	int rollno;
-	float marks;
-	char name[20];
+    struct Student *i, *j;
+    int choice;
+    int rollno;
+    float marks;
+    char name[50];
 
-	if(head==NULL)
-	{
-	 printf("no records found.\n");
-	 return;
-	}
+    if (head == NULL)
+    {
+        printf("No records found.\n");
+        return;
+    }
 
-	for(i=head;i!=NULL;i=i->next)
-	{
-	 for(j=i->next;j!=NULL;j=j->next)
-	 {
-	  if(i->rollno > j->rollno)
-	  {
-            rollno=i->rollno;
-	    i->rollno=j->rollno;
-	    j->rollno=rollno;
+    printf("1. Sort by Name\n");
+    printf("2. Sort by Marks (Low to High)\n");
+    printf("3. Sort by Marks (High to Low)\n");
+    printf("Enter choice: ");
+    scanf("%d", &choice);
 
-	    strcpy(name,i->name);
-	    strcpy(i->name,j->name);
-	    strcpy(j->name,name);
+    for (i = head; i != NULL; i = i->next)
+    {
+        for (j = i->next; j != NULL; j = j->next)
+        {
+            int swap = 0;
 
-	    marks=i->marks;
-	    i->marks=j->marks;
-	    j->marks=marks;
-	  }
-	 }
-	}
-	printf(" records sorted \n");
+            if (choice == 1 && strcmp(i->name, j->name) > 0)
+                swap = 1;
+
+            if (choice == 2 && i->marks > j->marks)
+                swap = 1;
+
+            if (choice == 3 && i->marks < j->marks)
+                swap = 1;
+
+            if (swap == 1)
+            {
+                rollno = i->rollno;
+                i->rollno = j->rollno;
+                j->rollno = rollno;
+
+                strcpy(name, i->name);
+                strcpy(i->name, j->name);
+                strcpy(j->name, name);
+
+                marks = i->marks;
+                i->marks = j->marks;
+                j->marks = marks;
+            }
+        }
+    }
+
+    printf("Records sorted successfully.\n");
+    display();
 }
-
 
 
 
